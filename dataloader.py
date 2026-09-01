@@ -119,63 +119,12 @@ class FMRIDataset(Dataset):
         
         return img_tensor, label
 
-class TripletFMRIDataset(Dataset):
-    """
-    Wrappa un FMRIDataset esistente e un sottoinsieme di indici (train/val/test)
-    per generare triplette (anchor, positive, negative) rispettando lo split
-    per paziente già fatto da DataLoader3D.
-    Usa solo img_tensor (ICA component, già a 2 canali), ignora struct_tensor.
-    """
-    def __init__(self, base_dataset, indices):
-        self.base_dataset = base_dataset
-        self.indices = indices
-
-        # Indicizza per label, SOLO tra gli indici di questo split
-        self.label_to_indices = {}
-        for idx in self.indices:
-            label = self.base_dataset.data[idx]['label']
-            self.label_to_indices.setdefault(label, []).append(idx)
-
-        self.all_labels = list(self.label_to_indices.keys())
-
-        if len(self.all_labels) < 2:
-            raise ValueError(
-                f"Servono almeno 2 classi per generare triplette, trovate: {self.all_labels}"
-            )
-
-    def __len__(self):
-        return len(self.indices)
-
-    def _get_input(self, idx):
-        img_tensor, _, _ = self.base_dataset[idx]  # struct_tensor e label scartati
-        return img_tensor
-
-    def __getitem__(self, i):
-        anchor_idx = self.indices[i]
-        anchor_label = self.base_dataset.data[anchor_idx]['label']
-
-        # Positivo: stessa label, indice diverso dall'anchor
-        candidates = self.label_to_indices[anchor_label]
-        positive_idx = anchor_idx
-        if len(candidates) > 1:
-            while positive_idx == anchor_idx:
-                positive_idx = random.choice(candidates)
-
-        # Negativo: label diversa
-        negative_label = random.choice([l for l in self.all_labels if l != anchor_label])
-        negative_idx = random.choice(self.label_to_indices[negative_label])
-
-        anchor_input = self._get_input(anchor_idx)
-        positive_input = self._get_input(positive_idx)
-        negative_input = self._get_input(negative_idx)
-
-        return anchor_input, positive_input, negative_input
 
 from sklearn.model_selection import train_test_split
 
 class DataLoader3D:
     @staticmethod
-    def create_loaders(csv_path, batch_size=16, num_workers=4, triplet = False):
+    def create_loaders(csv_path, batch_size=16, num_workers=4):
 
         dataset = FMRIDataset(csv_path)
 
@@ -227,25 +176,9 @@ class DataLoader3D:
 
         # Create subsets
 
-        if triplet:
-            train_dataset = TripletFMRIDataset(
-                dataset,
-                train_indices
-            )
-
-            val_dataset = TripletFMRIDataset(
-                dataset,
-                val_indices
-            )
-
-            test_dataset = TripletFMRIDataset(
-                dataset,
-                test_indices
-            )
-        else:
-            train_dataset = torch.utils.data.Subset(dataset, train_indices)
-            val_dataset = torch.utils.data.Subset(dataset, val_indices)
-            test_dataset = torch.utils.data.Subset(dataset, test_indices)
+        train_dataset = torch.utils.data.Subset(dataset, train_indices)
+        val_dataset = torch.utils.data.Subset(dataset, val_indices)
+        test_dataset = torch.utils.data.Subset(dataset, test_indices)
 
         train_loader = torch.utils.data.DataLoader(
             train_dataset,

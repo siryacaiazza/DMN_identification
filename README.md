@@ -80,6 +80,9 @@ DMN_identification/
 ├── slicer.py
 └── requirements.txt
 ```
+## Dataset
+
+The dataset used for this project are private. It comprises MELODIC ICA activations from resting-state fMRI. The shape of the ICA volumes for the training was 80x80x56xN_ICA.
 
 ### Main scripts
 
@@ -428,25 +431,15 @@ The dataset itself is not included in this repository.
 
 Possible improvements include:
 
-- [ ] Move dataset paths to a configuration file.
-- [ ] Add command-line arguments for training and testing.
 - [ ] Improve reproducibility through explicit random seeds.
 - [ ] Add automated train/validation/test splitting.
 - [ ] Add experiment configuration files.
-- [ ] Provide pretrained model download instructions.
-- [ ] Add visualization of identified DMN components.
-- [ ] Add quantitative comparison between CNN and SVM approaches.
-- [ ] Add automated experiment logging.
 
 ---
 
 ## Citation
 
 If you use this repository in academic work, please cite the associated project or publication.
-
-```text
-Citation information will be added here.
-```
 
 ---
 

@@ -1,0 +1,5 @@
+{
+    "kernel": "sigmoid",
+    "gamma": "auto",
+    "nu": 0.1
+}

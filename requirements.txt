@@ -1,0 +1,10 @@
+pandas
+nibabel
+nilearn
+matplotlib
+scipy
+scikit-learn
+seaborn
+keras
+optuna
+torch

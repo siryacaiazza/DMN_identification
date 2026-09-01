@@ -59,6 +59,12 @@ DMN_identification/
 │
 ├── CNN/
 │   ├── CNN_training.py
+|   ├── Small_CNN.py
+|   ├── small_best_model.pth
+|   ├── small_history.dict
+|   ├── Large_CNN.py
+|   ├── large_best_model.pth
+|   ├── large_history.dict
 │   └── CNN_testing.py
 │
 ├── SVM/
@@ -66,8 +72,7 @@ DMN_identification/
 │   ├── best_large_ocsvm.pkl
 │   ├── best_large_params.json
 │   ├── best_small_ocsvm.pkl
-│   ├── best_small_params.json
-│   └── large_siamese_history.dict
+│   └── best_small_params.json 
 │
 ├── ICA_preprocess.py
 ├── dataframe_builder.py
